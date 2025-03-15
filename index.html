@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Hire</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    iframe {
+      width: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe 
+    id="iframe" 
+    src="https://staging-website.prompthire.in/start-interview/679e752e07b89c68f1aff71e/" 
+    allow="camera; microphone; autoplay; fullscreen">
+  </iframe>
+
+  <script>
+    // Set iframe height to the current window height once
+    function setIframeHeight() {
+      const iframe = document.getElementById('iframe');
+      iframe.style.height = `${window.innerHeight}px`;
+    }
+
+    // Set the iframe height when the page loads
+    window.addEventListener('load', setIframeHeight);
+  </script>
+  <script src="./renderer.js"></script>
+</body>
+</html>
