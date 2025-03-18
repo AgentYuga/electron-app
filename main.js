@@ -32,7 +32,6 @@ function createWindow() {
     alwaysOnTop: true,
   });
   // mainWindow.loadFile('index.html');
-  mainWindow.webContents.openDevTools();
   mainWindow.loadURL('https://staging-website.prompthire.in/instruction');
 
   // Disable right-click context menu
