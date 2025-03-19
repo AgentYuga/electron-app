@@ -153,6 +153,8 @@ app.on('ready', () => {
   const requirementsMet = checkEnvironmentRequirements();
   if (!requirementsMet) {
     console.log('Environment requirements not met');
+    
+    // TODO: Add a more user-friendly error message
     dialog.showMessageBox(mainWindow, {
       type: 'error',
       message: 'Multiple monitors are not supported',
