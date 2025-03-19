@@ -18,7 +18,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       webSecurity: true,
-      spellcheck: false,
+      spellcheck: false, 
       enableRemoteModule: false,
       additionalArguments: ['--enable-features=WebRTCPipeWireCapturer'],
       autoplayPolicy: 'no-user-gesture-required'
@@ -133,6 +133,16 @@ function createWindow() {
   // });
 }
 
+function checkEnvironmentRequirements() {
+  // Check if user has multiple monitors
+  const screens = screen.getAllDisplays();
+  if (screens.length > 1) {
+    console.log('Multiple monitors detected');
+    return false;
+  }
+  return true;
+}
+
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -140,6 +150,16 @@ app.on('window-all-closed', function () {
 });
 
 app.on('ready', () => {
+  const requirementsMet = checkEnvironmentRequirements();
+  if (!requirementsMet) {
+    console.log('Environment requirements not met');
+    dialog.showMessageBox(mainWindow, {
+      type: 'error',
+      message: 'Multiple monitors are not supported',
+      icon: path.join(__dirname, 'assets', 'icon.png'),
+    });
+    return;
+  }
   createWindow();
   if (process.platform === 'darwin') {
     app.dock.setIcon(path.join(__dirname, 'assets', 'icon.png'));
