@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, screen } = require('electron');
+const { app, BrowserWindow, dialog, screen, ipcMain } = require('electron');
 const path = require('path');
 
 let mainWindow;
@@ -31,6 +31,12 @@ function createWindow() {
     movable: false,
     alwaysOnTop: true,
   });
+  const requirementsMet = checkEnvironmentRequirements();
+  if (!requirementsMet) {
+    console.log('Environment requirements not met');
+    mainWindow.loadFile('requirements-not-met.html');
+    return;
+  }
   // mainWindow.loadFile('index.html');
   mainWindow.loadURL('https://staging-website.prompthire.in/instruction');
 
@@ -39,7 +45,22 @@ function createWindow() {
     e.preventDefault();
   });
 
+  // Add display change monitor
+  screen.on('display-added', handleDisplayChange);
+  screen.on('display-removed', handleDisplayChange);
+
+  function handleDisplayChange() {
+    const requirementsMet = checkEnvironmentRequirements();
+    if (!requirementsMet && mainWindow) {
+      console.log('Multiple monitors detected during session');
+      mainWindow.loadFile('requirements-not-met.html');
+    }
+  }
+
+  // Clean up event listeners when window is closed
   mainWindow.on('closed', function () {
+    screen.removeListener('display-added', handleDisplayChange);
+    screen.removeListener('display-removed', handleDisplayChange);
     mainWindow = null;
   });
 
@@ -150,18 +171,6 @@ app.on('window-all-closed', function () {
 });
 
 app.on('ready', () => {
-  const requirementsMet = checkEnvironmentRequirements();
-  if (!requirementsMet) {
-    console.log('Environment requirements not met');
-    
-    // TODO: Add a more user-friendly error message
-    dialog.showMessageBox(mainWindow, {
-      type: 'error',
-      message: 'Multiple monitors are not supported',
-      icon: path.join(__dirname, 'assets', 'icon.png'),
-    });
-    return;
-  }
   createWindow();
   if (process.platform === 'darwin') {
     app.dock.setIcon(path.join(__dirname, 'assets', 'icon.png'));
@@ -172,4 +181,8 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on('close-app', () => {
+    app.quit();
 });

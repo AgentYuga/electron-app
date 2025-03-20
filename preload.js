@@ -1,4 +1,5 @@
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
+
 contextBridge.exposeInMainWorld('electron', {
   getUserMedia: async (constraints) => {
     try {
@@ -9,4 +10,10 @@ contextBridge.exposeInMainWorld('electron', {
       throw error;
     }
   }
+});
+
+contextBridge.exposeInMainWorld('api', {
+    closeApp: () => {
+        ipcRenderer.send('close-app');
+    }
 });
