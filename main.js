@@ -64,10 +64,8 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // Confirm before quitting
-  mainWindow.on('close', (e) => {
-    e.preventDefault();
-
+  // Add this IPC handler for the close button
+  ipcMain.on('show-close-confirmation', () => {
     dialog.showMessageBox(mainWindow, {
       type: 'question',
       buttons: ['Yes', 'No'],
@@ -97,7 +95,40 @@ function createWindow() {
 
   // Modify the did-finish-load handler to be more robust
   mainWindow.webContents.on('did-finish-load', () => {
+    // Inject the close button CSS and HTML
+    mainWindow.webContents.insertCSS(`
+      .custom-close-btn {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: background-color 0.3s;
+      }
+      .custom-close-btn:hover {
+        background-color: #c0392b;
+      }
+    `);
+
     mainWindow.webContents.executeJavaScript(`
+      // Add close button to the body
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'custom-close-btn';
+      closeBtn.innerHTML = '×';
+      closeBtn.onclick = () => window.api.showCloseConfirmation();
+      document.body.appendChild(closeBtn);
+
+      // Existing media setup code
       async function setupMediaDevices() {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ 

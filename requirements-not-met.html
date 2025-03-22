@@ -47,9 +47,32 @@
             color: #e74c3c;
             font-weight: bold;
         }
+        .custom-close-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        .custom-close-btn:hover {
+            background-color: #c0392b;
+        }
     </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <button class="custom-close-btn" onclick="window.api.closeApp()">×</button>
     <div class="container">
         <h1>System Requirements Not Met</h1>
         <p>We've detected that you're using multiple monitors. For security reasons, this application can only run with a single monitor setup.</p>

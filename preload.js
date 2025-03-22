@@ -15,5 +15,8 @@ contextBridge.exposeInMainWorld('electron', {
 contextBridge.exposeInMainWorld('api', {
     closeApp: () => {
         ipcRenderer.send('close-app');
+    },
+    showCloseConfirmation: () => {
+        ipcRenderer.send('show-close-confirmation');
     }
 });
